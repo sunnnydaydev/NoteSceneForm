@@ -2,12 +2,6 @@
 
 # 执行运行时检查并创建运行时视图
 
-最简单的方法是使用ArFragment，系统自动处理了ArCore的一些必要东西：
-
-- Google Play Services for AR 的检测，安装，更新。
-- 相机权限的检测，申请。
-- 自动处理ar会话管理。
-
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -25,15 +19,93 @@
 </FrameLayout>
 ```
 
-若是不想使用默认的UI或者默认的设置我们可以有两种方式来改变
-- 创建ArFragment或者BaseArFragment的子类（一般这种毕竟手动处理了权限等问题）
-- 直接使用或扩展ArSceneView（这个需要手动处理版本检查，arcore录像等问题）
+最简单的方法是直接使用ArFragment，系统自动处理了ArCore的一些必要东西：
 
-继续接着上面的默认的ArFragment讲起，ArFragment内部的布局默认只有一个子View也就是ArSceneView，执行完必要的检测后
+- Google Play Services for AR 的检测，安装，更新。
+- 相机权限的检测，申请。
+- 自动处理ar会话管理。
+
+若是不想使用默认的UI或者默认的设置我们可以有两种方式来改变：
+
+（1）创建ArFragment或者BaseArFragment的子类（一般这种毕竟手动处理了权限等问题）
+
+```kotlin
+/**
+ * Create by SunnyDay /11/15 14:54:12
+ * 自定义的arFragment，进行一些方法的重写验证测试。
+ */
+class CustomFragment : ArFragment() {
+
+    private val permissions =
+        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE)
+
+    /**
+     * 是否为ar必备，为ar必备才去申请危险权限、初始化session等操作。一般设置为true。
+     * */
+    override fun isArRequired(): Boolean {
+        return super.isArRequired()
+    }
+
+    /**
+     * 这个方法可以重写申请一些其他的权限，但系统会默认申请camera权限，且camera为必备权限。
+     *
+     * 我们额外加的权限为非必备权限，用户拒绝了仍然可以进入app，camera权限用户拒绝时系统会弹窗提示到设置页面。
+     * */
+    override fun getAdditionalPermissions(): Array<String> {
+        return permissions
+    }
+
+    /**
+     * 这个是异常处理的，在这里可以处理arcore回调过来的异常case，若不想more
+     * */
+    override fun handleSessionException(sessionException: UnavailableException?) {
+        super.handleSessionException(sessionException)
+    }
+
+    /**
+     * 重要方法：一般自定义fragment重写这个方法，进行一些必要的配置。
+     * below：Face 3D mesh is enabled.
+     * */
+    override fun getSessionConfiguration(session: Session?): Config {
+        return Config(session).apply {
+            augmentedFaceMode = Config.AugmentedFaceMode.MESH3D
+        }
+    }
+
+    /**
+     * 重要方法：配置一些feature时重写这个方法。
+     * 如下使用前摄像头
+     * */
+    override fun getSessionFeatures(): MutableSet<Session.Feature> {
+        return EnumSet.of(Session.Feature.FRONT_CAMERA)
+    }
+
+    /**
+     * 可重写默认的ar界面
+     * */
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val frameLayout = super.onCreateView(inflater, container, savedInstanceState) as? FrameLayout
+        //隐藏指示物
+        planeDiscoveryController.hide()
+        //指示物布局置空
+        planeDiscoveryController.setInstructionView(null)
+        return  frameLayout
+    }
+
+}
+```
+
+
+（2）直接使用或扩展ArSceneView（这个需要手动处理版本检查，arcore录像等问题）
+
+ArFragment内部的布局默认只有一个子View也就是ArSceneView，执行完必要的检测后
 ArFragment就会做如下事情：
-1、将会话中相机图像渲染到ArSceneView上
-2、呈现内置SceneForm用户体验动画，向用户展示应如何移动手机以激活 AR 体验
-3、使用默认的 PlaneRenderer检测到突出显示内容（PlaneRenderer为ArSceneView的一个成员）
+
+（1）将会话中相机图像渲染到ArSceneView上
+
+（2）呈现内置SceneForm用户体验动画，向用户展示应如何移动手机以激活 AR 体验
+
+（3）使用默认的 PlaneRenderer检测到突出显示内容（PlaneRenderer为ArSceneView的一个成员）
 
 ```kotlin
   // 获取ArSceneView，在fragment中
@@ -102,7 +174,7 @@ sceneform.asset('sampledata/models/andy.obj',
         'src/main/res/raw/andy')
 ```
 
-（2）使用ModelRenderable类进行构建可渲染对象
+（3）使用ModelRenderable类进行构建可渲染对象
 
 ```kotlin
         ModelRenderable.builder()
@@ -178,4 +250,16 @@ sceneform.asset('sampledata/models/andy.obj',
                 val modelRenderable =
                     ShapeFactory.makeSphere(0.1f, Vector3(0.0f, 0.15f, 0.0f), material)
             }
+```
+
+# 打造场景
+
+ArSceneView的父类SceneView有一个成员Scene，Scene是场景。
+
+场景是树状数据结构，上面有要呈现的虚拟对象的节点。我们可以吧可渲染对象直接附加到节点上~
+
+```kotlin
+val node = Node()
+node.setParent(arFragment.getArSceneView().getScene())
+node.setRenderable(andyRenderable)
 ```
