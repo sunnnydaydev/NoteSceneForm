@@ -54,7 +54,7 @@ Renderable是一个抽象类，其有两个子实现类ViewRenderable和ModelRen
 
 这里借助ViewRenderable这个类，这个类在3d中渲染出一个2d卡片，同时还具备轻触卡片交互的功能。
 
-[!图片](https://developers.google.cn/static/sceneform/images/view-renderable.jpg)
+![图片](https://developers.google.cn/static/sceneform/images/view-renderable.jpg)
 
 很简单，我们只需要提供一个布局或者一个view即可~
 
@@ -169,7 +169,7 @@ sceneform.asset('sampledata/models/andy.obj',
 
 使用ShapeFactory和MaterialFactory可以创建立方体、球体和圆柱体等简单形状，让您可以使用简单的形状和材料创建可渲染对象。
 
-[!](https://developers.google.cn/static/sceneform/images/shape-renderable.jpg)
+![](https://developers.google.cn/static/sceneform/images/shape-renderable.jpg)
 
 ```kotlin
         //直接获取一个可渲染对象
