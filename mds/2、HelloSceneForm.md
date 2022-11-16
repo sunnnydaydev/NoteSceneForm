@@ -105,7 +105,7 @@ ArFragment就会做如下事情：
 
 （2）呈现内置SceneForm用户体验动画，向用户展示应如何移动手机以激活 AR 体验
 
-（3）使用默认的 PlaneRenderer检测到突出显示内容（PlaneRenderer为ArSceneView的一个成员）
+（3）使用默认的 PlaneRenderer检测到"突出"显示内容(PlaneRenderer为ArSceneView的一个成员)
 
 ```kotlin
   // 获取ArSceneView，在fragment中

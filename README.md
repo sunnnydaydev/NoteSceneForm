@@ -20,6 +20,8 @@
 
 [2、HelloSceneForm](mds/2、HelloSceneForm.md)
 
+[3、3D素材资源](mds/3、3D素材资源.md)
+
 # 参考
 
 [SceneForm](https://developers.google.cn/sceneform/develop)
