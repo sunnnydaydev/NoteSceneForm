@@ -24,6 +24,10 @@
 
 [4、光照估测](mds/4、光照估测.md)
 
+[5、动画](mds/5、动画.md)
+
+[6、增强脸部](mds/6、增强脸部.md)
+
 # 参考
 
 [SceneForm](https://developers.google.cn/sceneform/develop)
