@@ -272,3 +272,102 @@ ArSceneView的父类SceneView有一个成员Scene，Scene是场景。
 
         }
 ```
+###### 1、OnTapArPlaneListener涉及api
+
+(1)HitResult
+
+点击结果，常见的api如下
+
+- com.google.ar.core.Anchor createAnchor():在点击位置创建一个锚点
+- float getDistance()：返回照相机镜头到点击位置的距离，单位meter。
+
+（2）Plane
+
+描述现实世界的一些信息
+
+（3）MotionEvent
+
+手指在屏幕事件的触摸封装
+
+###### 2、Node & Scene 相关科普
+
+- Node为节点的意思
+
+- Scene为场景的意思
+
+- 整个场景图由多个节点组成
+
+- 可以通过aRFragment?.arSceneView?.scene来获取Scene对象。并且Scene是NodeParent的子类:
+
+```java
+public class Scene extends NodeParent {
+    ...
+}
+```
+
+- 可以为节点指定父节点,也可为节点指定可渲染对象
+
+```java
+// 指定父节点
+ public void setParent(@Nullable NodeParent var1) {
+    
+ }
+ //指定可渲染对象
+public void setRenderable(@Nullable Renderable var1) {
+    
+}
+```
+
+- 特殊的节点Anchor，这是一个锚点节点，创建也很简单
+
+```kotlin
+            // 通过hitResult可直接获取点击位置的锚点
+            val anchor: Anchor = hitResult.createAnchor()
+            // 根据锚点直接生成一个锚点节点
+            val anchorNode = AnchorNode(anchor)
+```
+
+- 特殊的节点TransformableNode，这个节点支持选中、旋转、平移、缩放等手势。
+
+```kotlin
+            // 创建一个TransformableNode节点
+            val andy = TransformableNode(aRFragment?.transformationSystem)
+            // 设置父节点
+            andy.setParent(anchorNode)
+            // 设置可渲染对象
+            andy.renderable = andyRenderable
+            // 设置选中
+            andy.select()
+```
+
+
+###### 3、用户交互
+
+当用户在屏幕点击时会生成一个3d机器人，机器人支持平移、放大、缩小等手势~
+
+```kotlin
+        aRFragment?.setOnTapArPlaneListener { hitResult: HitResult, plane: Plane?, motionEvent: MotionEvent? ->
+            if (andyRenderable == null) {
+                return@setOnTapArPlaneListener
+            }
+            // Create the Anchor.
+            val anchor: Anchor = hitResult.createAnchor()
+            val anchorNode = AnchorNode(anchor)
+            anchorNode.setParent(aRFragment?.arSceneView?.scene)
+
+            // Create the transformable andy and add it to the anchor.
+            val andy = TransformableNode(aRFragment?.transformationSystem)
+            andy.setParent(anchorNode)
+            andy.renderable = andyRenderable
+            andy.select()
+        }
+```
+
+# 小结
+
+- 了解到ArFragment默认处理了异常、权限、Arcore会话，把相机图像实时渲染到屏幕
+- 了解到了还可自定义ArFragment或者使用ArSceneView来实现自定义效果
+- 了解到了几种可渲染对象（ViewRenderable和ModelRenderable）
+- 了解到了Scene的概念，节点的概念
+- 了解到了几种节点AnchorNode、TransformableNode。
+

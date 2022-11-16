@@ -23,6 +23,7 @@ import com.google.ar.sceneform.ux.TransformableNode
 import com.sunnyday.notesceneform.R
 import com.sunnyday.notesceneform.R.layout
 import kotlinx.android.synthetic.main.activity_hello_scene_form.*
+import timber.log.Timber
 import java.util.function.Consumer
 import java.util.function.Function
 
@@ -61,6 +62,7 @@ class HelloSceneFormActivity : AppCompatActivity() {
                 return@setOnTapArPlaneListener
             }
 
+            Timber.d("hitResult:${hitResult.distance}")
 
 
             // Create the Anchor.
