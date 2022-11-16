@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
+import android.os.Build.TIME
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +16,8 @@ import com.google.ar.core.Anchor
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
 import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.rendering.ModelRenderable
+import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.rendering.*
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import com.sunnyday.notesceneform.R
@@ -58,6 +60,8 @@ class HelloSceneFormActivity : AppCompatActivity() {
             if (andyRenderable == null) {
                 return@setOnTapArPlaneListener
             }
+
+
 
             // Create the Anchor.
             val anchor: Anchor = hitResult.createAnchor()

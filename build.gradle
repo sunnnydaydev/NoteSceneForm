@@ -4,6 +4,7 @@ buildscript {
         //sceneform need this repo
         google()
         mavenLocal()
+        mavenCentral()
     }
     dependencies {
         //sceneform plugin

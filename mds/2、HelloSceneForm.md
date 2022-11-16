@@ -258,8 +258,17 @@ ArSceneView的父类SceneView有一个成员Scene，Scene是场景。
 
 场景是树状数据结构，上面有要呈现的虚拟对象的节点。我们可以吧可渲染对象直接附加到节点上~
 
+也可将节点添加到其他节点，以形成父子关系。如果某个节点是另一个节点的子级，则该节点会随着其父级而移动、 旋转和缩放，就像
+在身体移动时手臂会如何移动。一个节点可以有多个子级，但只能有一个父级，从而形成一种树状结构。这种结构称为场景图。
+
+每一帧，Sceneform 都会从相机的视角（由 ARCore 运动跟踪指导）渲染场景图。可以通过监听触摸和手势事件、针对节点执行命中
+测试以及放置锚点来与场景互动。
+
+如下是ARFragment提供的一个事件监听，当用户在场景图中点击时这个方法就会回调：
 ```kotlin
-val node = Node()
-node.setParent(arFragment.getArSceneView().getScene())
-node.setRenderable(andyRenderable)
+        aRFragment?.setOnTapArPlaneListener { hitResult: HitResult, 
+                                              plane: Plane?, 
+                                              motionEvent: MotionEvent? ->
+
+        }
 ```
