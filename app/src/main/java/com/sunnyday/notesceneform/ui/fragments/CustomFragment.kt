@@ -50,6 +50,7 @@ class CustomFragment : ArFragment() {
      * */
     override fun getSessionConfiguration(session: Session?): Config {
         return Config(session).apply {
+            lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
             augmentedFaceMode = Config.AugmentedFaceMode.MESH3D
         }
     }

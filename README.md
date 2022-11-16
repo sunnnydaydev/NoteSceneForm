@@ -22,6 +22,8 @@
 
 [3、3D素材资源](mds/3、3D素材资源.md)
 
+[4、光照估测](mds/4、光照估测.md)
+
 # 参考
 
 [SceneForm](https://developers.google.cn/sceneform/develop)
