@@ -25,7 +25,6 @@ class GlassesTryOnActivity : AppCompatActivity() {
 
     private var foxFragment: FaceArFragment? = null
     private var faceRegionRenderable: Renderable? = null
-    private var faceMeshTexture: Texture? = null
     private val faceNodeMap = mutableMapOf<AugmentedFace, AugmentedFaceNode>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
