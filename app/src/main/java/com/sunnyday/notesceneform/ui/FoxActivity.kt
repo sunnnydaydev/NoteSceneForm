@@ -1,69 +1,23 @@
-# 增强人脸
+package com.sunnyday.notesceneform.ui
 
-# 工作原理
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.ActivityManager
+import android.content.Context
+import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Toast
+import com.google.ar.core.AugmentedFace
+import com.google.ar.core.TrackingState
+import com.google.ar.sceneform.rendering.ModelRenderable
+import com.google.ar.sceneform.rendering.Renderable
+import com.google.ar.sceneform.rendering.Texture
+import com.google.ar.sceneform.ux.AugmentedFaceNode
+import com.sunnyday.notesceneform.R
+import com.sunnyday.notesceneform.ui.fragments.FaceArFragment
+import timber.log.Timber
 
-使用Ar技术自动检测到人脸的不同区域，然后在这些区域叠加一些3d模型或纹理以达到增强人脸的效果~
-
-为了在检测到的人脸上正确叠加纹理与3d模型，ArCore会根据检测到的人脸生成"增强的人脸网格"。"增强的人脸网格"是人脸的虚拟表
-现形式，由人脸网格，面部区域，和用户头部中心组成。
-
-当用户的脸部被摄像机捕捉时Arcore会：
-
-1、标识出头部中心和面部网格
-
-头部中心在鼻子的后面，是整个头部的中心。
-
-脸部网格由数百个定点组成。
-
-2、AugmentedFace这个类使用面部网格和头部中心来标识脸部的其他区域。如左前额 (LEFT_FOREHEAD)右前额 (RIGHT_FOREHEAD)
-鼻尖(NOSE_TIP)
-
-
-SceneForm的脸部网格方向
-
-![](https://developers.google.cn/static/sceneform/images/axis-diagrams-java2.jpg)
-
-# 如何增强面部呢？
-
-需要我们拿到由艺术家在 3D 建模和动画软件中提前创建的fbx模型文件，以及自定义的纹理文件（通常为png）
-
-# code eg
-
-```kotlin
-/**
- * Create by SunnyDay /11/17 15:13:08
- */
-class FaceArFragment:ArFragment() {
-    override fun getSessionConfiguration(session: Session?): Config {
-        val config = Config(session)
-        //支持面部网格
-        config.augmentedFaceMode = AugmentedFaceMode.MESH3D
-        return config
-    }
-
-    override fun getSessionFeatures(): Set<Session.Feature?>? {
-        //设置前摄像头
-        return EnumSet.of(Session.Feature.FRONT_CAMERA)
-    }
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val frameLayout =
-            super.onCreateView(inflater, container, savedInstanceState) as FrameLayout?
-        //隐藏指示默认的view
-        planeDiscoveryController.hide()
-        planeDiscoveryController.setInstructionView(null)
-        return frameLayout
-    }
-
-}
-```
-
-```kotlin
 class FoxActivity : AppCompatActivity() {
     companion object {
         private const val MIN_OPENGL_VERSION = 3.0
@@ -169,10 +123,3 @@ class FoxActivity : AppCompatActivity() {
         return true
     }
 }
-```
-
-核心思想 监听场景变化事件，不断地为场景中的人脸渲染模型与纹理。
-
-
-
-

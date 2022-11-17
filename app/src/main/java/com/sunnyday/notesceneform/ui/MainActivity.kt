@@ -11,7 +11,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         helloSceneForm.setOnClickListener {
-            startActivity(Intent(this,HelloSceneFormActivity::class.java))
+            startActivity(Intent(this, HelloSceneFormActivity::class.java))
+        }
+        foxActivity.setOnClickListener {
+            startActivity(Intent(this, FoxActivity::class.java))
         }
     }
 }
