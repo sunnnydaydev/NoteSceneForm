@@ -16,5 +16,8 @@ class MainActivity : AppCompatActivity() {
         foxActivity.setOnClickListener {
             startActivity(Intent(this, FoxActivity::class.java))
         }
+        glassesTryOnActivity.setOnClickListener {
+            startActivity(Intent(this, GlassesTryOnActivity::class.java))
+        }
     }
 }

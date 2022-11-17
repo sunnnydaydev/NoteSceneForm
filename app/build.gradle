@@ -66,3 +66,13 @@ sceneform.asset('sampledata/models/fox_face.fbx',
         'sampledata/models/fox_face_material.mat',
         'sampledata/models/fox_face.sfa',
         'src/main/res/raw/fox_face')
+
+sceneform.asset('sampledata/models/sunglasses.fbx',
+        'default',
+        'sampledata/models/sunglasses.sfa',
+        'src/main/res/raw/sunglasses')
+
+sceneform.asset('sampledata/models/yellow_sunglasses.fbx',
+        'default',
+        'sampledata/models/yellow_sunglasses.sfa',
+        'src/main/res/raw/yellow_sunglasses')

@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.MainActivity"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
 
     <Button
         android:id="@+id/helloSceneForm"
@@ -19,5 +21,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/foxactivity" />
+
+    <Button
+        android:id="@+id/glassesTryOnActivity"
+        android:textAllCaps="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/glassestryon" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

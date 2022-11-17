@@ -2,4 +2,6 @@
     <string name="app_name">NoteSceneForm</string>
     <string name="hellosceneform">HelloSceneForm</string>
     <string name="foxactivity">FoxActivity</string>
+    <string name="glassestryon">GlassesTryOn</string>
+    <string name="tryonanother">tryOnAnother</string>
 </resources>

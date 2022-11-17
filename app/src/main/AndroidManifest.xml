@@ -27,6 +27,9 @@
         android:theme="@style/Theme.NoteSceneForm"
         tools:targetApi="31">
         <activity
+            android:name=".ui.GlassesTryOnActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.FoxActivity"
             android:exported="false" />
 
@@ -41,7 +44,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:label="MainActivity">
+            android:label="Ar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
