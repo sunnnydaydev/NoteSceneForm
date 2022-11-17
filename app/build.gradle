@@ -50,6 +50,9 @@ dependencies {
     implementation 'com.google.ar.sceneform:core:1.17.1'
     //load material in runtime
     implementation 'com.google.ar.sceneform:assets:1.15.0'
+    //model animator
+    implementation "com.google.ar.sceneform:animation:1.15.0"
+    // log lib
     implementation 'com.jakewharton.timber:timber:5.0.1'
 }
 
