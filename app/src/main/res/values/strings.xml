@@ -4,4 +4,5 @@
     <string name="foxactivity">FoxActivity</string>
     <string name="glassestryon">GlassesTryOn</string>
     <string name="tryonanother">tryOnAnother</string>
+    <string name="pupillarydistance">PupillaryDistance</string>
 </resources>

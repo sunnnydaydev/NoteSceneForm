@@ -27,6 +27,9 @@
         android:theme="@style/Theme.NoteSceneForm"
         tools:targetApi="31">
         <activity
+            android:name=".ui.PupillaryDistanceActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.GlassesTryOnActivity"
             android:exported="false" />
         <activity

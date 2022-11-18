@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.sunnyday.notesceneform.R
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_pupillary_distance.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,5 +20,9 @@ class MainActivity : AppCompatActivity() {
         glassesTryOnActivity.setOnClickListener {
             startActivity(Intent(this, GlassesTryOnActivity::class.java))
         }
+        pd.setOnClickListener {
+            startActivity(Intent(this, PupillaryDistanceActivity::class.java))
+        }
+
     }
 }
