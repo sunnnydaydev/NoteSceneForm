@@ -16,6 +16,8 @@ import com.sunnyday.notesceneform.ui.fragments.FaceArFragment
 import timber.log.Timber
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 /**
  * use google arCore to get pupillary distance.
@@ -46,6 +48,7 @@ class PupillaryDistanceActivity : AppCompatActivity() {
 
     companion object {
         private const val MIN_OPENGL_VERSION = 3.0
+        private const val SQUARE = 2.0
     }
 
     private val faceNodeMap = mutableMapOf<AugmentedFace, AugmentedFaceNode>()
@@ -64,6 +67,7 @@ class PupillaryDistanceActivity : AppCompatActivity() {
         val arFragment = supportFragmentManager.findFragmentById(R.id.pupil) as FaceArFragment?
         val arSceneView = arFragment?.arSceneView
         val scene = arSceneView?.scene
+
         arSceneView?.scene?.addOnUpdateListener {
             val faceList = arSceneView.session?.getAllTrackables(AugmentedFace::class.java)
             faceList?.forEach {
@@ -71,6 +75,7 @@ class PupillaryDistanceActivity : AppCompatActivity() {
                 if (!faceNodeMap.containsKey(it)) {
                     val faceNode = AugmentedFaceNode(it)
                     faceNode.setParent(scene)
+                    faceNode.renderable = null
                     faceNodeMap[it] = faceNode
                 }
 
@@ -89,7 +94,7 @@ class PupillaryDistanceActivity : AppCompatActivity() {
                  *
                  * 计算空间两点坐标距离：
                  *
-                 *   找下计算公式
+                 *   勾股定理，具体参考photo/三点距离.png
                  *
                  * */
                 //
@@ -97,16 +102,23 @@ class PupillaryDistanceActivity : AppCompatActivity() {
 
                 //取瞳孔数据
 
-                val leftVertexX = it.meshVertices[3*160-3]
-                val leftVertexY = it.meshVertices[3*160-2]
-                val leftVertexZ = it.meshVertices[3*160-1]
+                val leftVertexX = it.meshVertices[3*160-3].toDouble()
+                val leftVertexY = it.meshVertices[3*160-2].toDouble()
+                val leftVertexZ = it.meshVertices[3*160-1].toDouble()
 
-                val rightVertexX = it.meshVertices[3*385-3]
-                val rightVertexY = it.meshVertices[3*385-2]
-                val rightVertexZ = it.meshVertices[3*385-1]
+                val rightVertexX = it.meshVertices[3*385-3].toDouble()
+                val rightVertexY = it.meshVertices[3*385-2].toDouble()
+                val rightVertexZ = it.meshVertices[3*385-1].toDouble()
 
                 Timber.d("leftVertex:($leftVertexX,$leftVertexY,$leftVertexZ)")
                 Timber.d("rightVertex:($rightVertexX,$rightVertexY,$rightVertexZ)")
+
+                val result = (rightVertexX-leftVertexX).pow(SQUARE)+
+                        (rightVertexY-leftVertexY).pow(SQUARE)+
+                        (rightVertexZ-leftVertexZ).pow(SQUARE)
+
+                val pupillaryDistanceActivity = sqrt(result)*1000 // millimeter
+                Timber.d("你的瞳距：$pupillaryDistanceActivity")
             }
 
             // recycle
