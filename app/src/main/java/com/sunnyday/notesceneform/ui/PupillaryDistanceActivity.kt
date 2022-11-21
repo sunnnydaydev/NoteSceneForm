@@ -84,7 +84,6 @@ class PupillaryDistanceActivity : AppCompatActivity() {
         arSceneView?.scene?.addOnUpdateListener {
             val faceList = arSceneView.session?.getAllTrackables(AugmentedFace::class.java)
             faceList?.forEach {
-
                 if (!faceNodeMap.containsKey(it)) {
                     val faceNode = AugmentedFaceNode(it)
                     //  faceNode.setParent(scene) // 无模型时脸部是一块黑
