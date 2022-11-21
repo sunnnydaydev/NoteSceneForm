@@ -1,28 +1,17 @@
-package com.sunnyday.notesceneform.ui
+# 测量人的瞳距
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.ActivityManager
-import android.content.Context
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.widget.Toast
-import com.google.ar.core.AugmentedFace
-import com.google.ar.core.TrackingState
-import com.google.ar.sceneform.rendering.Renderable
-import com.google.ar.sceneform.rendering.ViewRenderable
-import com.google.ar.sceneform.ux.AugmentedFaceNode
-import com.sunnyday.notesceneform.R
-import com.sunnyday.notesceneform.ui.fragments.FaceArFragment
-import kotlinx.android.synthetic.main.activity_pupillary_distance.*
-import timber.log.Timber
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.text.Format
-import kotlin.math.pow
-import kotlin.math.sqrt
+思路很简单：
 
+1、拿到瞳孔坐标
+
+注意这里需要注意ArCore的AugmentedFace只提供了三个面部区域特征点（RegionType枚举定义），其余的特征点位置未进行枚举
+实例的提供，我们需要根据文档提供的468人脸特征点图去自己计算。
+
+2、计算空间距离
+
+其他没啥坑，实现简单，看代码即可~ 
+
+```kotlin
 /**
  * use google arCore to get pupillary distance.
  * */
@@ -185,3 +174,4 @@ class PupillaryDistanceActivity : AppCompatActivity() {
         }
     }
 }
+```

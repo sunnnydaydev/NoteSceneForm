@@ -12,6 +12,8 @@
 
 [6、增强脸部](mds/6、增强脸部.md)
 
+[7、练习:PD测量](mds/7、pd测量.md)
+
 # 参考
 
 [SceneForm](https://developers.google.cn/sceneform/develop)
