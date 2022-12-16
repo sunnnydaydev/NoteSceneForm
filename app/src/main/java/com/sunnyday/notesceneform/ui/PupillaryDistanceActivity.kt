@@ -27,28 +27,7 @@ import kotlin.math.sqrt
  * use google arCore to get pupillary distance.
  * */
 class PupillaryDistanceActivity : AppCompatActivity() {
-    // test data
-    private val tableVerticesWithTriangle = floatArrayOf(
-        //第一个三角形
-        -0.5f, -0.5f,
-        0.5f, 0.5f,
-        -0.5f, 0.5f,
-        // 第二个三角形
-        -0.5f, -0.5f,
-        0.5f, -0.5f,
-        0.5f, 0.5f,
-        // 中间的分割线
-        -0.5f, 0f,
-        0.5f, 0f,
-        // 两木追顶点
-        0f, -0.25f,
-        0f, 0.25f
-    )
-    private var vertexData = ByteBuffer
-        .allocateDirect(tableVerticesWithTriangle.size * 4)
-        .order(ByteOrder.nativeOrder())
-        .asFloatBuffer()
-        .put(tableVerticesWithTriangle)
+
 
     companion object {
         private const val MIN_OPENGL_VERSION = 3.0
@@ -62,12 +41,6 @@ class PupillaryDistanceActivity : AppCompatActivity() {
         beforeSetContentView()
         setContentView(R.layout.activity_pupillary_distance)
 
-        // test how to get value from floatBuffer. because of invoking vertexData.array failed directly
-        // we can get index by invoking data by for loop
-        for (i in 0 until vertexData.position()) {
-            Timber.d("测试:${vertexData[i]}")
-        }
-
         var renderable: Renderable? = null
         ViewRenderable
             .builder()
@@ -79,11 +52,48 @@ class PupillaryDistanceActivity : AppCompatActivity() {
 
         val arFragment = supportFragmentManager.findFragmentById(R.id.pupil) as FaceArFragment?
         val arSceneView = arFragment?.arSceneView
-        val scene = arSceneView?.scene
 
         arSceneView?.scene?.addOnUpdateListener {
             val faceList = arSceneView.session?.getAllTrackables(AugmentedFace::class.java)
             faceList?.forEach {
+
+
+                val cameraPose = arSceneView.arFrame?.camera?.pose
+                // 摄像机-> 鼻尖距离
+                val norsePose = it.getRegionPose(AugmentedFace.RegionType.NOSE_TIP)
+                val dx = cameraPose?.tx()?.minus(norsePose.tx())
+                val dy = cameraPose?.ty()?.minus(norsePose.ty())
+                val dz = cameraPose?.tz()?.minus(norsePose.tz())
+                val dis = sqrt(
+                    dx!!.toDouble().pow(SQUARE) +
+                            dy!!.toDouble().pow(SQUARE) +
+                            dz!!.toDouble().pow(SQUARE)
+                ) * 100
+
+                // 摄像机-> 左前额
+                val foreHeadLeftPose = it.getRegionPose(AugmentedFace.RegionType.FOREHEAD_LEFT)
+                val dxForeHeadLeft = cameraPose.tx().minus(foreHeadLeftPose.tx())
+                val dyForeHeadLeft  = cameraPose.ty().minus(foreHeadLeftPose.ty())
+                val dzForeHeadLeft  = cameraPose.tz().minus(foreHeadLeftPose.tz())
+                val disForeHeadLeft  = sqrt(
+                    dxForeHeadLeft.toDouble().pow(SQUARE) +
+                            dyForeHeadLeft.toDouble().pow(SQUARE) +
+                            dzForeHeadLeft.toDouble().pow(SQUARE)
+                ) * 100
+                // 右前额
+
+                val foreHeadRightPose = it.getRegionPose(AugmentedFace.RegionType.FOREHEAD_RIGHT)
+                val dxForeHeadRight = cameraPose.tx().minus(foreHeadRightPose.tx())
+                val dyForeHeadRight = cameraPose.ty().minus(foreHeadRightPose.ty())
+                val dzForeHeadRight = cameraPose.tz().minus(foreHeadRightPose.tz())
+                val disForeHeadRight  = sqrt(
+                    dxForeHeadRight.toDouble().pow(SQUARE) +
+                            dyForeHeadRight.toDouble().pow(SQUARE) +
+                            dzForeHeadRight.toDouble().pow(SQUARE)
+                ) * 100
+
+                Timber.d("toNorse:$dis cm toForeHeadLeft$disForeHeadLeft cm toForeHeadRight$disForeHeadRight cm")
+
                 if (!faceNodeMap.containsKey(it)) {
                     val faceNode = AugmentedFaceNode(it)
                     //  faceNode.setParent(scene) // 无模型时脸部是一块黑
@@ -107,48 +117,17 @@ class PupillaryDistanceActivity : AppCompatActivity() {
                  * 计算空间两点坐标距离：
                  *
                  *   勾股定理，具体参考photo/三点距离.png
-                 *
-                 *
-                 *  瞳孔特征点取值（left，right）：
-                 *
-                 *
-                 *   上三点
-                 *
-                 *  （1）第一组  (160,385)  结果59mm, 瞳孔在屏幕内时, 结果上下2mm波动。
-                 *  （2）第二组  (159,386)  结果58mm, 瞳孔在屏幕内时, 结果上下3mm波动。
-                 *  （3）第三组  (158,387)  结果58mm, 瞳孔在屏幕内时, 结果上下3mm波动。
-                 *
-                 *   下三点
-                 *
-                 *  （1）第一组  (144, 380)  结果140mm, 误差明显较大
-                 *  （2）第二组  (145, 374)  结果80mm   误差明显较大
-                 *  （3）第三组  (153, 373)  结果132mm  误差明显较大
-                 *
-                 *   其他点
-                 *      27-257   44mm
-                 *     163-381  121mm
-                 *     154-390  119mm
-                 *     161-384  106mm
-                 *     159-385  54mm （少了9mm,有点大了）
-                 *
-                 *     160-387  68mm （多了5mm平均值可算入计算范围）
-                 *     159-387  64mm  (多了1)
-                 *
-                 *
-                 *
                  *   发现：使用第一组特征点相对来说精确点。
                  *
                  *
                  * */
-                //
-                Timber.d("所有数据：${it.meshVertices.position()}")
 
-                //取瞳孔数据
+
+                //眼周特征点上三组：
 
                 val leftVertexX = it.meshVertices[3 * 160 - 3].toDouble()
                 val leftVertexY = it.meshVertices[3 * 160 - 2].toDouble()
                 val leftVertexZ = it.meshVertices[3 * 160 - 1].toDouble()
-
                 val rightVertexX = it.meshVertices[3 * 385 - 3].toDouble()
                 val rightVertexY = it.meshVertices[3 * 385 - 2].toDouble()
                 val rightVertexZ = it.meshVertices[3 * 385 - 1].toDouble()
@@ -156,34 +135,49 @@ class PupillaryDistanceActivity : AppCompatActivity() {
                 val leftVertexX2 = it.meshVertices[3 * 159 - 3].toDouble()
                 val leftVertexY2 = it.meshVertices[3 * 159 - 2].toDouble()
                 val leftVertexZ2 = it.meshVertices[3 * 159 - 1].toDouble()
-
                 val rightVertexX2 = it.meshVertices[3 * 386 - 3].toDouble()
                 val rightVertexY2 = it.meshVertices[3 * 386 - 2].toDouble()
                 val rightVertexZ2 = it.meshVertices[3 * 386 - 1].toDouble()
 
-                val leftVertexX3 = it.meshVertices[3 * 160 - 3].toDouble()
-                val leftVertexY3 = it.meshVertices[3 * 160 - 2].toDouble()
-                val leftVertexZ3 = it.meshVertices[3 * 160 - 1].toDouble()
-
+                val leftVertexX3 = it.meshVertices[3 * 158 - 3].toDouble()
+                val leftVertexY3 = it.meshVertices[3 * 158 - 2].toDouble()
+                val leftVertexZ3 = it.meshVertices[3 * 158 - 1].toDouble()
                 val rightVertexX3 = it.meshVertices[3 * 387 - 3].toDouble()
                 val rightVertexY3 = it.meshVertices[3 * 387 - 2].toDouble()
                 val rightVertexZ3 = it.meshVertices[3 * 387 - 1].toDouble()
 
-                val leftVertexX4 = it.meshVertices[3 * 159 - 3].toDouble()
-                val leftVertexY4 = it.meshVertices[3 * 159 - 2].toDouble()
-                val leftVertexZ4 = it.meshVertices[3 * 159 - 1].toDouble()
+                //眼周特征点下三组：
+                val leftVertexX4 = it.meshVertices[3 * 144 - 3].toDouble()
+                val leftVertexY4 = it.meshVertices[3 * 144 - 2].toDouble()
+                val leftVertexZ4 = it.meshVertices[3 * 144 - 1].toDouble()
+                val rightVertexX4 = it.meshVertices[3 * 380 - 3].toDouble()
+                val rightVertexY4 = it.meshVertices[3 * 380 - 2].toDouble()
+                val rightVertexZ4 = it.meshVertices[3 * 380 - 1].toDouble()
 
-                val rightVertexX4 = it.meshVertices[3 * 387 - 3].toDouble()
-                val rightVertexY4 = it.meshVertices[3 * 387 - 2].toDouble()
-                val rightVertexZ4 = it.meshVertices[3 * 387 - 1].toDouble()
+                val leftVertexX5 = it.meshVertices[3 * 145 - 3].toDouble()
+                val leftVertexY5 = it.meshVertices[3 * 145 - 2].toDouble()
+                val leftVertexZ5 = it.meshVertices[3 * 145 - 1].toDouble()
+                val rightVertexX5 = it.meshVertices[3 * 374 - 3].toDouble()
+                val rightVertexY5 = it.meshVertices[3 * 374 - 2].toDouble()
+                val rightVertexZ5 = it.meshVertices[3 * 374 - 1].toDouble()
 
-                val leftVertexX5 = it.meshVertices[3 * 158 - 3].toDouble()
-                val leftVertexY5 = it.meshVertices[3 * 158 - 2].toDouble()
-                val leftVertexZ5 = it.meshVertices[3 * 158 - 1].toDouble()
 
-                val rightVertexX5 = it.meshVertices[3 * 387 - 3].toDouble()
-                val rightVertexY5 = it.meshVertices[3 * 387 - 2].toDouble()
-                val rightVertexZ5 = it.meshVertices[3 * 387 - 1].toDouble()
+                val leftVertexX6 = it.meshVertices[3 * 153 - 3].toDouble()
+                val leftVertexY6 = it.meshVertices[3 * 153 - 2].toDouble()
+                val leftVertexZ6 = it.meshVertices[3 * 153 - 1].toDouble()
+                val rightVertexX6 = it.meshVertices[3 * 373 - 3].toDouble()
+                val rightVertexY6 = it.meshVertices[3 * 373 - 2].toDouble()
+                val rightVertexZ6 = it.meshVertices[3 * 373 - 1].toDouble()
+
+                // 特征点眼周混合数据（不一定按照点的对称关系选取）
+
+                val leftVertexXOther = it.meshVertices[3 * 160 - 3].toDouble()
+                val leftVertexYOther = it.meshVertices[3 * 160 - 2].toDouble()
+                val leftVertexZOther= it.meshVertices[3 * 160 - 1].toDouble()
+                val rightVertexXOther = it.meshVertices[3 * 386 - 3].toDouble()
+                val rightVertexYOther= it.meshVertices[3 * 386 - 2].toDouble()
+                val rightVertexZOther= it.meshVertices[3 * 386 - 1].toDouble()
+
 
 //                Timber.d("leftVertex:($leftVertexX,$leftVertexY,$leftVertexZ)")
 //                Timber.d("rightVertex:($rightVertexX,$rightVertexY,$rightVertexZ)")
@@ -208,12 +202,23 @@ class PupillaryDistanceActivity : AppCompatActivity() {
                         (rightVertexY5 - leftVertexY5).pow(SQUARE) +
                         (rightVertexZ5 - leftVertexZ5).pow(SQUARE)
 
-                val pupillaryDistance = sqrt(result) * 1000  // millimeter
+                val result6 = (rightVertexX6 - leftVertexX6).pow(SQUARE) +
+                        (rightVertexY6 - leftVertexY6).pow(SQUARE) +
+                        (rightVertexZ6 - leftVertexZ6).pow(SQUARE)
+
+                val resultOther = (rightVertexXOther - leftVertexXOther).pow(SQUARE) +
+                        (rightVertexYOther - leftVertexYOther).pow(SQUARE) +
+                        (rightVertexZOther - leftVertexZOther).pow(SQUARE)
+
+                val pupillaryDistance =  sqrt(result) * 1000   // millimeter
                 val pupillaryDistance2 = sqrt(result2) * 1000  // millimeter
                 val pupillaryDistance3 = sqrt(result3) * 1000  // millimeter
                 val pupillaryDistance4 = sqrt(result4) * 1000  // millimeter
                 val pupillaryDistance5 = sqrt(result5) * 1000  // millimeter
-                Timber.d("你的瞳距：$pupillaryDistance")
+                val pupillaryDistance6 = sqrt(result6) * 1000  // millimeter
+                val pupillaryDistanceOther = sqrt(resultOther) * 1000  // millimeter
+              //  Timber.d("你的瞳距：$pupillaryDistance3")
+
 
                 /**
                  * todo 精度优化，有两种优化方案：
@@ -236,8 +241,20 @@ class PupillaryDistanceActivity : AppCompatActivity() {
                         ) / 2.0
                 val str = String.format("%.2f", avl)
 
-                pdText.text = "your pd :$str mm"
+                if (dis<29.5){
+                    pdText.text =  "离远些"// 离近些
+                }else if (dis>30.5){
+                    pdText.text =  "离近些"// 离远些
+                }else{
+                    val pd = String.format("%.2f", pupillaryDistanceOther)
+                    val norse =  String.format("%.2f", dis)
+                    val leftHead = String.format("%.2f", disForeHeadLeft)
+                    val rightHead = String.format("%.2f", disForeHeadRight)
+                    pdText.text = "pd:$pd \n norse:$norse \n leftHead：$leftHead \n rightHead:$rightHead"
+                }
+
             }
+
 
             // recycle
             val iterator: MutableIterator<Map.Entry<AugmentedFace, AugmentedFaceNode>> =
