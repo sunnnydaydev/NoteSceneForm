@@ -8,12 +8,12 @@ project build.gradle中
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
-        //sceneform need this repo
+        //sceneForm need this repo
         google()
         mavenLocal()
     }
     dependencies {
-        //apply sceneform plugin
+        //apply sceneForm plugin
         classpath 'com.google.ar.sceneform:plugin:1.17.1'
     }
 }
@@ -35,16 +35,16 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.android.extensions'
-    // use sceneform plugin
+    // use sceneForm plugin
     id 'com.google.ar.sceneform.plugin'
 }
 
 android {
     defaultConfig {
-        // Sceneform requires minSdkVersion >= 24.
+        // SceneForm requires minSdkVersion >= 24.
         minSdkVersion 24
     }
-    // Sceneform libraries use language constructs from Java 8.
+    // SceneForm libraries use language constructs from Java 8.
     // Add these compile options if targeting minSdkVersion < 26.
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

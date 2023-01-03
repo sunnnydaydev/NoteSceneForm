@@ -1,8 +1,12 @@
 # SceneForm
 
-[1、环境配置](mds/1、环境配置.md)
+SceneForm 是Google提供的一个Android开源库，使用这个库我们可以轻松地在AR应用和非AR应用中渲染逼真的3D场景，而无需学习OpenGL。
 
-[2、HelloSceneForm](mds/2、HelloSceneForm.md)
+[0、HelloSceneForm](mds/0、HelloSceneForm.md)
+
+[1、SceneForm环境配置](mds/1、SceneForm环境配置.md)
+
+[2、详解](mds/2、详解.md)
 
 [3、3D素材资源](mds/3、3D素材资源.md)
 
@@ -12,10 +16,12 @@
 
 [6、增强脸部](mds/6、增强脸部.md)
 
-[7、练习:PD测量](mds/7、pd测量.md)
+[增强脸部实战-pd测量](mds/增强脸部实战-pd测量.md)
 
 # 参考
 
-[SceneForm](https://developers.google.cn/sceneform/develop)
+[SceneForm官方文档](https://developers.google.cn/sceneform/develop)
 
-[SceneForm 示例项目](https://developers.google.cn/sceneform/develop/samples)
+[SceneForm官方示例](https://developers.google.cn/sceneform/develop/samples)
+
+[ArCore官方文档](https://developers.google.cn/ar/develop)
