@@ -36,4 +36,11 @@
         android:layout_height="wrap_content"
         android:text="@string/pupillarydistance" />
 
+    <Button
+        android:id="@+id/ruler"
+        android:textAllCaps="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ar_ruler" />
+
 </androidx.appcompat.widget.LinearLayoutCompat>

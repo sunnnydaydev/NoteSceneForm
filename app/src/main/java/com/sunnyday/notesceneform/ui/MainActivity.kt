@@ -24,5 +24,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, PupillaryDistanceActivity::class.java))
         }
 
+        ruler.setOnClickListener {
+            startActivity(Intent(this, ArRulerActivity::class.java))
+        }
+
+
     }
 }

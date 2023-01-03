@@ -6,7 +6,7 @@ SceneForm 是Google提供的一个Android开源库，使用这个库我们可以
 
 [1、SceneForm环境配置](mds/1、SceneForm环境配置.md)
 
-[2、详解](mds/2、详解.md)
+[2、SceneForm使用入门](mds/2、Sceneform使用入门.md)
 
 [3、3D素材资源](mds/3、3D素材资源.md)
 
@@ -16,7 +16,7 @@ SceneForm 是Google提供的一个Android开源库，使用这个库我们可以
 
 [6、增强脸部](mds/6、增强脸部.md)
 
-[增强脸部实战-pd测量](mds/增强脸部实战-pd测量.md)
+[增强脸部练习-pd测量](mds/增强脸部练习-PD测量.md)
 
 # 参考
 

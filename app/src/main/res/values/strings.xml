@@ -5,4 +5,5 @@
     <string name="glassestryon">GlassesTryOn</string>
     <string name="tryonanother">tryOnAnother</string>
     <string name="pupillarydistance">PupillaryDistance</string>
+    <string name="ar_ruler">ArRuler</string>
 </resources>
